@@ -2,7 +2,7 @@
 import { type BookingSlot, type HTMLElementEvent } from '@/type';
 import BookingSlotItemTimesItem from './BookingSlotItemTimesItem.vue';
 import AddIcon from './AddIcon.vue';
-import { getISOWeekDayString } from '@/utils';
+import { getISOWeekDayString, generateTimeOptions } from '@/utils';
 import { maximumTime } from '@/constants';
 
 const props = defineProps<{
@@ -25,12 +25,15 @@ const {
 const ableToAddNewTimeSlot = computed(() => {
 	return props.slot.timeSlots.length < maxSessions.value;
 });
+const timeOptions = computed(() =>
+	generateTimeOptions(new Date(props.slot.dayInMiliseconds), visitDuration.value.value)
+);
 
 const checked = computed(() => Boolean(props.slot.checked && props.slot.timeSlots.length > 0));
 const onCheckedChange = (e: Event) => {
 	const value = (e as HTMLElementEvent<HTMLInputElement>).target.checked;
 	if (props.slot.timeSlots.length === 0) {
-		addMoreTimeItemToTimeSlots(props.index);
+		addMoreTimeItemToTimeSlots(props.index, timeOptions.value[0].value);
 	}
 	updateSlotsChecked(props.index, value);
 };
@@ -39,7 +42,7 @@ const onButtonAddClick = () => {
 	if (!ableToAddNewTimeSlot.value) {
 		return;
 	}
-	addMoreTimeItemToTimeSlots(props.index);
+	addMoreTimeItemToTimeSlots(props.index, timeOptions.value[0].value);
 };
 
 watch(visitDuration, (duration) => {
@@ -91,6 +94,7 @@ watch(maxSessions, (max) => {
 					:end-time="
 						bookSlotsEndTimes && bookSlotsEndTimes[index] ? bookSlotsEndTimes[index][timeIndex] : 0
 					"
+					:time-options="timeOptions"
 					@update:start-time="(val) => updateBookSlotStartTime(val, index, timeIndex)"
 					@remove-time-item="removeTimeItems(index, timeIndex)"
 				/>

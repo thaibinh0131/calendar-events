@@ -1,4 +1,4 @@
-import { type BookingSlot, type DropdownItem } from '@/type';
+import type { BookingSlot, DropdownItem, CalendarDataSourceItem } from '@/type';
 import {
 	minutesToMiliseconds,
 	getStartOfDate,
@@ -41,9 +41,6 @@ const allowVideoCall = useStorage<boolean>('allowVideoCall', false);
 const bookSlots = useStorage<BookingSlot[]>('savedBookingSlots', []);
 
 export const useSettings = () => {
-	const timeOptions = computed(() =>
-		generateTimeOptions(selectedDate, visitDuration.value.value as number)
-	);
 	const maximumTimeInMiliseconds = computed(
 		() => getStartOfDate(selectedDate).getTime() + hoursToMiliseconds(maximumTime)
 	);
@@ -64,7 +61,7 @@ export const useSettings = () => {
 						checked: false,
 						timeSlots: [
 							{
-								startTime: timeOptions.value[0].value,
+								startTime: generateTimeOptions(new Date(el), visitDuration.value.value)[0].value,
 							},
 						],
 					} as BookingSlot)
@@ -85,15 +82,36 @@ export const useSettings = () => {
 			};
 		}
 	};
-	const addMoreTimeItemToTimeSlots = (bookSlotIndex: number) => {
+	const addMoreTimeItemToTimeSlots = (bookSlotIndex: number, start: number) => {
 		bookSlots.value[bookSlotIndex].timeSlots.push({
-			startTime: timeOptions.value[0].value,
+			startTime: start,
 		});
 	};
 	const removeTimeItems = (bookSlotIndex: number, timeIndex: number, amount = 1) => {
 		bookSlots.value[bookSlotIndex].timeSlots.splice(timeIndex, amount);
 	};
 	const startDateToDisplayInCalendar = computed(() => getStartOfWeek(selectedDate));
+	const calendarViewDataSource = computed<CalendarDataSourceItem[]>(() => {
+		const dataSource: CalendarDataSourceItem[] = [];
+		const dataSourceIds: string[] = [];
+		bookSlots.value
+			.filter((el) => Boolean(el.checked && el.timeSlots.length > 0))
+			.forEach((bookSlot, slotIndex) => {
+				bookSlot.timeSlots.forEach((time, timeIndex) => {
+					const id = `${bookSlot.dayInMiliseconds + time.startTime}`;
+					if (!dataSourceIds.includes(id)) {
+						dataSourceIds.push(id);
+						dataSource.push({
+							Id: id,
+							StartTime: new Date(time.startTime),
+							EndTime: new Date(bookSlotsEndTimes.value[slotIndex][timeIndex] || 0),
+							Subject: 'Available',
+						});
+					}
+				});
+			});
+		return dataSource;
+	});
 	return {
 		selectedDate,
 		visitDuration,
@@ -101,11 +119,11 @@ export const useSettings = () => {
 		allowVideoCall,
 		bookSlots,
 		visitDurationOptions,
-		timeOptions,
 		slotsCheckedMap,
 		bookSlotsEndTimes,
 		maximumTimeInMiliseconds,
 		startDateToDisplayInCalendar,
+		calendarViewDataSource,
 		updateSlotsChecked,
 		updateBookSlotStartTime,
 		addMoreTimeItemToTimeSlots,

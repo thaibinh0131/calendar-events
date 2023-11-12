@@ -9,6 +9,7 @@ const {
 	visitDurationOptions,
 	maxSessions,
 	bookSlots,
+	calendarViewDataSource,
 } = useSettings();
 </script>
 

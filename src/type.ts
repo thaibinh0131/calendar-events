@@ -16,3 +16,10 @@ export interface BookingSlot {
 export type HTMLElementEvent<T extends HTMLElement> = Event & {
 	target: T;
 };
+
+export interface CalendarDataSourceItem {
+	Id: string;
+	Subject: string;
+	StartTime: Date;
+	EndTime: Date;
+}

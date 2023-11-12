@@ -6,11 +6,11 @@ import { generateTimeLabel } from '@/utils';
 
 const props = defineProps<{
 	startTime: number;
+	timeOptions: DropdownItem[];
 	endTime?: number;
 }>();
 
 const emit = defineEmits(['update:startTime', 'removeTimeItem']);
-const { timeOptions } = useSettings();
 
 const startTimeSelected = computed(() => {
 	return {
