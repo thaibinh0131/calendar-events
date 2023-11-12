@@ -12,11 +12,11 @@ const selected = useSyncProps<DropdownItem>(props, 'modelValue', emit);
 <template>
 	<select v-model="selected">
 		<option
-			value=""
+			:value="selected"
 			disabled
 			selected
 		>
-			Select
+			{{ selected.title || 'Select' }}
 		</option>
 
 		<option

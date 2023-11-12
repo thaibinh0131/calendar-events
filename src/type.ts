@@ -1,14 +1,18 @@
 export interface DropdownItem {
 	title: string;
-	value: string | number;
+	value: number;
 }
 
 export type TimeSlot = {
 	startTime: number; // startTime  in miliseconds
-	endTime: number; // endTime in miliseconds
+	endTime?: number; // endTime in miliseconds, could be calculate by startTime and duration
 };
 
 export interface BookingSlot {
 	dayInMiliseconds: number;
-	timeSlots?: TimeSlot[];
+	checked: boolean;
+	timeSlots: TimeSlot[];
 }
+export type HTMLElementEvent<T extends HTMLElement> = Event & {
+	target: T;
+};

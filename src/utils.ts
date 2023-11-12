@@ -1,4 +1,5 @@
 import type { DropdownItem } from './type';
+import { minimumTime, maximumTime } from './constants';
 
 export const minutesToMiliseconds = (minutes: number) => {
 	return minutes * 60 * 1000;
@@ -18,19 +19,23 @@ export const daysOfWeekMap = new Map<number, string>([
 	[0, 'Sun'],
 ]);
 
-export const generateWeekDaysFromDate = (date: Date) => {
+export const getStartOfWeek = (date: Date) => {
 	const newDate = new Date(date);
 	const day = newDate.getDay();
 	const diff = newDate.getDate() - day + (day === 0 ? -6 : 1);
 	const startOfWeek = new Date(newDate.setDate(diff));
-	console.debug('startOfWeek', startOfWeek.toISOString());
+	return startOfWeek;
+};
+
+export const generateWeekDaysFromDate = (date: Date) => {
+	const startOfWeek = getStartOfWeek(date);
 	const days: number[] = [];
 	for (let i = 0; i < 7; i++) {
 		const d = new Date(startOfWeek);
 		d.setDate(d.getDate() + i);
-		console.debug(d.getTime(), d.toISOString());
 		days.push(d.getTime());
 	}
+	return days;
 };
 
 export const getISOWeekDayString = (miliseconds: number) => {
@@ -38,26 +43,34 @@ export const getISOWeekDayString = (miliseconds: number) => {
 };
 
 export const generateTimeLabel = (miliseconds: number) => {
-	return new Date(miliseconds).toLocaleString('en-US', { hour: 'numeric', hour12: true });
+	return new Date(miliseconds).toLocaleString('en-US', {
+		hour: 'numeric',
+		minute: '2-digit',
+		hour12: true,
+	});
 };
 
-export const generateTimeOptions = (date: Date) => {
-	const minTime = 7; // Start time = 7am
-	const maxTime = 19; // EndTime = 7 pm
-	const times: number[] = [];
-	generateWeekDaysFromDate(date);
+export const getStartOfDate = (date: Date) => {
 	const newDate = new Date(date);
 	newDate.setHours(0, 0, 0, 0);
-	for (let i = minTime; i <= maxTime; i++) {
-		console.debug('HR', hoursToMiliseconds(i));
+	return newDate;
+};
 
-		times.push(newDate.getTime() + hoursToMiliseconds(i));
+export const generateTimeOptions = (date: Date, duration: number) => {
+	generateWeekDaysFromDate(date);
+	const newDate = getStartOfDate(date);
+	const hours: number[] = [minimumTime];
+	let k = minimumTime;
+	while (hoursToMiliseconds(k) + duration < hoursToMiliseconds(maximumTime)) {
+		k += 0.25;
+		hours.push(k);
 	}
 
-	return times.map((el) => {
+	return hours.map((el) => {
+		const time = newDate.getTime() + hoursToMiliseconds(el);
 		return {
-			title: generateTimeLabel(el),
-			value: el,
+			title: generateTimeLabel(time),
+			value: time,
 		} as DropdownItem;
 	});
 };

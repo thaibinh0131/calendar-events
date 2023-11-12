@@ -2,7 +2,14 @@
 import Dropdown from './Dropdown.vue';
 import BookingSlotItem from './BookingSlotItem.vue';
 
-const { visitDuration, timeOptions, visitDurationOptions, maxSessions, bookSlots } = useSettings();
+const {
+	visitDuration,
+	timeOptions,
+	bookSlotsEndTimes,
+	visitDurationOptions,
+	maxSessions,
+	bookSlots,
+} = useSettings();
 </script>
 
 <template>
@@ -24,10 +31,14 @@ const { visitDuration, timeOptions, visitDurationOptions, maxSessions, bookSlots
 		</div>
 		<hr class="my-8" />
 		<div>
-			<div class="text-base">Availability</div>
-			<div>Set your weekly recurring schedule</div>
+			<div class="text-xl font-semibold">Availability</div>
+			<div class="mb-4">Set your weekly recurring schedule</div>
 			<div>
-				<!-- <BookingSlotItem v-for=""></BookingSlotItem> -->
+				<BookingSlotItem
+					v-for="(slot, index) in bookSlots"
+					:slot="slot"
+					:index="index"
+				></BookingSlotItem>
 			</div>
 		</div>
 	</section>
