@@ -32,6 +32,11 @@ npm install
 ```sh
 npm run dev
 ```
+### Type-Check, Compile and Minify for Staging with sourcemap enabled
+
+```sh
+npm run build-staging
+```
 
 ### Type-Check, Compile and Minify for Production
 
@@ -39,8 +44,3 @@ npm run dev
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
