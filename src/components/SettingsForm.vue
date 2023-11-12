@@ -4,12 +4,12 @@ import BookingSlotItem from './BookingSlotItem.vue';
 
 const {
 	visitDuration,
-	timeOptions,
 	bookSlotsEndTimes,
 	visitDurationOptions,
 	maxSessions,
 	bookSlots,
 	calendarViewDataSource,
+	allowVideoCall,
 } = useSettings();
 </script>
 
@@ -29,6 +29,19 @@ const {
 				hide-controls
 				v-model="maxSessions"
 			/>
+		</div>
+		<div class="flex items-center mt-4">
+			<input
+				type="checkbox"
+				v-model="allowVideoCall"
+				id="videoCall"
+				class="min-w-max mr-2"
+			/>
+			<label
+				class="font-medium cursor-pointer"
+				for="videoCall"
+				>Allow video tour call</label
+			>
 		</div>
 		<hr class="my-8" />
 		<div>
