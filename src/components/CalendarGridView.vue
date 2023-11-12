@@ -44,6 +44,7 @@ const hideLicense = () => {
 
 	body.childNodes.forEach((node) => {
 		if (node.textContent === textShouldHide) {
+			node.remove()
 		}
 		return node;
 	});
