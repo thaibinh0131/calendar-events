@@ -51,7 +51,6 @@ export const useSettings = () => {
 			) as number[];
 		});
 	});
-	generateWeekDaysFromDate(selectedDate);
 	const initializeBookSlots = () => {
 		bookSlots.value = [
 			...generateWeekDaysFromDate(selectedDate).map(

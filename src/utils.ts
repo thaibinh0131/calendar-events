@@ -57,7 +57,6 @@ export const getStartOfDate = (date: Date) => {
 };
 
 export const generateTimeOptions = (date: Date, duration: number) => {
-	generateWeekDaysFromDate(date);
 	const newDate = getStartOfDate(date);
 	const hours: number[] = [minimumTime];
 	let k = minimumTime;
